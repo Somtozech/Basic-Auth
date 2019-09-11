@@ -31,3 +31,8 @@ exports.generateJWT = user => {
   const token = jwt.sign(user, config.JWT_KEY, { expiresIn: '5h' });
   return token;
 };
+
+//get all users
+exports.getAllUsers = () => {
+  return User.find({}).select('email username firstname lastname role');
+};

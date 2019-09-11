@@ -74,8 +74,24 @@ async function deleteUser(req, res, next) {
   }
 }
 
+async function getAllUsers(req, res, next) {
+  try {
+    const users = await userServices.getAllUsers();
+    res.status(200).send({
+      message: 'All users',
+      data: {
+        users
+      },
+      error: null
+    });
+  } catch (error) {
+    next(err);
+  }
+}
+
 module.exports = {
   signup,
   login,
-  deleteUser
+  deleteUser,
+  getAllUsers
 };

@@ -15,15 +15,17 @@ app.use('/api', appRoutes(Router));
 
 app.use((req, res, next) => {
   const error = new Error('Not Found');
+  error.status = 404;
   next(error);
 });
 
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).send({
-    message: 'Internal Server Error',
+app.use((error, req, res, next) => {
+  console.error(error);
+  const status = error.status || 500;
+  res.status(status).send({
+    message: error.message || 'Internal Server Error',
     data: null,
-    error: err
+    error: error
   });
 });
 
