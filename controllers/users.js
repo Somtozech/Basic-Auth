@@ -1,4 +1,4 @@
-const { addUser, checkUser, generateJWT } = require('../services/users');
+const userServices = require('../services/users');
 
 /**
  * Creates a new user with a valid payload or body
@@ -8,15 +8,18 @@ const { addUser, checkUser, generateJWT } = require('../services/users');
  */
 async function signup(req, res, next) {
   try {
-    const user = await addUser(req.body);
+    const user = await userServices.addUser(req.body);
     if (!user) {
       return res.status(409).send({
-        status: 'Conflict',
-        message: 'Email already in use'
+        message: 'Email already in use',
+        data: null,
+        error: null
       });
     }
     res.status(200).send({
-      message: 'User created'
+      message: 'User created',
+      data: null,
+      error: null
     });
   } catch (error) {
     next(error);
@@ -31,21 +34,40 @@ async function signup(req, res, next) {
  */
 async function login(req, res, next) {
   try {
-    const user = await checkUser(req.body);
+    const user = await userServices.checkUser(req.body);
     if (!user) {
       return res.status(401).send({
-        message: 'Auth Failed. Email or password is Incorrect'
+        message: 'Auth Failed. Email or password is Incorrect',
+        data: null,
+        error: null
       });
     }
-    const token = generateJWT({
-      email: user.email
+    const token = userServices.generateJWT({
+      email: user.email,
+      role: user.role
     });
 
     res.status(200).send({
       message: 'User Login was successful',
-      email: user.email,
-      username: user.username,
-      token
+      data: {
+        email: user.email,
+        username: user.username,
+        token
+      },
+      error: null
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function deleteUser(req, res, next) {
+  try {
+    await userServices.deleteUser(req.params.id);
+    res.status(200).send({
+      message: 'User was deleted',
+      data: null,
+      error: null
     });
   } catch (error) {
     next(error);
@@ -54,5 +76,6 @@ async function login(req, res, next) {
 
 module.exports = {
   signup,
-  login
+  login,
+  deleteUser
 };

@@ -21,6 +21,11 @@ exports.checkUser = async ({ email, password }) => {
   return user;
 };
 
+//check if a user exists and deletes the user
+exports.deleteUser = userId => {
+  return User.findOneAndDelete({ _id: userId });
+};
+
 //generates jwt
 exports.generateJWT = user => {
   const token = jwt.sign(user, config.JWT_KEY, { expiresIn: '5h' });

@@ -5,7 +5,8 @@ async function initDB() {
   try {
     await mongoose.connect(config.MONGO_URI, {
       useNewUrlParser: true,
-      useCreateIndex: true
+      useCreateIndex: true,
+      useFindAndModify: false
     });
     console.log('Connection to Database was successful');
   } catch (error) {

@@ -13,11 +13,18 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       lowercase: true,
-      required: [true, 'Email is required']
+      required: [true, 'Email is required'],
+      unique: true
     },
     password: {
       type: String,
       required: [true, 'Password is required']
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      lowercase: true,
+      default: 'user'
     }
   },
   { timestamps: true }

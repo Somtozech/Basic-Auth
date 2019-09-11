@@ -2,7 +2,14 @@ const joi = require('@hapi/joi');
 
 // validate sign up payload to make sure it has valid fields present
 function validateSignupBody(req, res, next) {
-  const keys = ['email', 'username', 'firstname', 'lastname', 'password'];
+  const keys = [
+    'email',
+    'username',
+    'firstname',
+    'lastname',
+    'password',
+    'role'
+  ];
   for (let key of Object.keys(req.body)) {
     if (!keys.includes(key)) delete req.body[key];
   }
@@ -18,18 +25,20 @@ function validateSignupBody(req, res, next) {
       .required(),
     firstname: joi.string().required(),
     lastname: joi.string().required(),
-    password: joi.string().required()
+    password: joi.string().required(),
+    role: joi.string()
   });
   const body = req.body || {};
 
   const { error } = schema.validate(body);
   if (error) {
     return res.status(400).send({
-      status: 'Bad Request',
+      message: 'Bad Request',
       error: {
         name: error.name,
         message: error.details[0].message
-      }
+      },
+      data: null
     });
   }
   next();
@@ -55,11 +64,12 @@ function validateLoginBody(req, res, next) {
   const { error } = schema.validate(body);
   if (error) {
     return res.status(400).send({
-      status: 'Bad Request',
+      message: 'Bad Request',
       error: {
         name: error.name,
         message: error.details[0].message
-      }
+      },
+      data: null
     });
   }
   next();
